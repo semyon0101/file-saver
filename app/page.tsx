@@ -1,9 +1,10 @@
-import { getFiles } from "@/app/lib/data"
+import { getFiles, getUsers } from "@/app/lib/data"
+import UploadFile from "@/app/ui/uploadFile"
 
 export default async function Page() {
-	const data = await getFiles();
+	//const data = getFiles();
 
 	return (
-		<div>hello world</div>
+		<UploadFile />
 	);
 }

@@ -1,9 +1,9 @@
 'use server';
 
 import { createClient } from "@supabase/supabase-js";
-import { User } from "@/app/lib/definitions";
+import { User, File } from "@/app/lib/definitions";
 
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
 
 export async function getUsers() {
 	console.log('Fetching revenue data...');
@@ -14,9 +14,11 @@ export async function getUsers() {
 		throw new Error('Failed to fetch revenue data.');
 	}
 
-	console.log(data);
+	// console.log(data);
 	const users = data as User[];
 	console.log('Data fetch completed.');
+
+	console.log(users);
 
 	return users;
 }
@@ -24,17 +26,24 @@ export async function getUsers() {
 export async function getFiles() {
 	console.log('Fetching revenue data...');
 
-	// Use the JS library to create a bucket.
-	// Use the JS library to create a bucket.
+	const { data, error } = await supabase.storage.from("files").list();
 
-	const data = await supabase.storage.createBucket("files");
+	if (error != null) {
+		console.log('Database Error:', error.message);
+		throw new Error('Failed to fetch revenue data.');
+	}
 
-	//const users = data as User[];
-	console.log(data);
+	// console.log(data);
+	const files = data.map((fileObj): File => {
+		return {
+			name: fileObj.name,
+		}
+	});
 	console.log('Data fetch completed.');
 
+	console.log(files);
 
 
-	return data;
+	return files;
 }
 
