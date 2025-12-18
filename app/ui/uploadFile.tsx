@@ -2,18 +2,15 @@
 import { ChangeEvent, useState } from 'react';
 
 export default function UploadFile() {
-	const [file, setFile] = useState();
+	const [file, setFile] = useState<File>();
 
 	const handleUpload = async () => {
-		console.log(file);
-		return;
 		if (!file) return;
 
 		const formData = new FormData();
-		//formData.append('file', file);
+		formData.append('file', file);
 
-		// Send to YOUR server, not Supabase directly
-		const response = await fetch('/api/upload-secret', {
+		const response = await fetch('/api/upload', {
 			method: 'POST',
 			body: formData,
 		});
@@ -23,8 +20,8 @@ export default function UploadFile() {
 	};
 
 	const setFiles = (e: ChangeEvent<HTMLInputElement>) => {
-		console.log(e);
-
+		if (!e.target.files) return;
+		setFile(e.target.files[0]);
 	};
 
 	return (
