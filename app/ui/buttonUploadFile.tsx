@@ -1,39 +1,25 @@
 'use client';
-import { ChangeEvent, useState } from 'react';
+
+import { useActionState } from 'react';
+import { uploadFilesasdfsdfsdfsd, State } from '@/app/lib/actions';
 
 export default function ButtonUploadFile() {
-	const [file, setFile] = useState<File>();
-
-	const handleUpload = async () => {
-		if (!file) {
-			console.log("You haven't choosed any file");
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append('file', file);
-
-		const response = await fetch('/api/upload', {
-			method: 'POST',
-			body: formData,
-		});
-
-		const result = await response.json();
-		console.log(result);
-	};
-
-	const setFiles = (e: ChangeEvent<HTMLInputElement>) => {
-		if (!e.target.files) {
-			console.log("You haven't choosed any file");
-			return;
-		}
-		setFile(e.target.files[0]);
-	};
+	const initialState: State = {};
+	const [state, formAction] = useActionState(uploadFilesasdfsdfsdfsd, initialState);
 
 	return (
-		< div >
-			<input type="file" onChange={setFiles} /> <br />
-			<button onClick={handleUpload}>Secure Upload</button>
-		</div >
+		<form action={formAction}>
+			<input type="file" name="file" defaultValue="hi.txt" /> <br />
+			<button type="submit">Secure Upload</button>
+			{(state.error) &&
+				<div>
+					---------
+					<p className="rounded-md bg-gray-50 p-4 md:p-6">
+						{state.error}
+					</p>
+					-------------
+				</div>
+			}
+		</form>
 	);
 }

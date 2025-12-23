@@ -10,7 +10,7 @@ export async function fetchUsers() {
 	const { data, error } = await supabase.from("users").select("*");
 
 	if (error != null) {
-		return { error: 'Database Error:' + error.message };
+		return { error: error.message };
 	}
 
 	const users = data as User[];
@@ -24,7 +24,7 @@ export async function fetchFiles() {
 	const { data, error } = await supabase.storage.from("files").list();
 
 	if (error != null) {
-		return { error: 'Database Error:' + error.message };
+		return { error: error.message };
 	}
 
 	return { data: data, error: null };

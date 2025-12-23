@@ -5,7 +5,7 @@ export default async function Table() {
 
 	if (error != null) {
 		console.log(error);
-		throw new Error("Something wrong");
+		throw new Error("Something went wrong");
 	}
 
 	return (

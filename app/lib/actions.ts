@@ -2,26 +2,42 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from 'zod';
 
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
 
 export type State = {
-	errors?: {
-		customerId?: string[];
-		amount?: string[];
-		status?: string[];
-	};
-	message: string | null;
+	error?: string | null;
 };
 
-export async function uploadFile(buffer: Buffer<ArrayBuffer>, fileName: string) {
-	const { data, error } = await supabase.storage.from('files').upload(fileName, buffer);
+
+const UploadFileSchema = z.object({
+	file: z.file(),
+});
+
+export async function uploadFilesasdfsdfsdfsd(prevState: State, formData: FormData): Promise<State> {
+	const validatedFields = UploadFileSchema.safeParse({
+		file: formData.get('file'),
+	});
+
+	if (!validatedFields.success) {
+		return {
+			error: validatedFields.error.message,
+		};
+	}
+	const { file } = validatedFields.data;
+
+
+	const arrayBuffer = await file.arrayBuffer();
+	const buffer = Buffer.from(arrayBuffer);
+
+	const { error } = await supabase.storage.from('files').upload(file.name, buffer);
 
 	if (error != null) {
-		console.log('Database Error: ' + error.message);
-
+		return { error: error.message };
 	}
 
-	//revalidatePath("");
+	revalidatePath("/");
+	return {};
 }
-
