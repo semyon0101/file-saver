@@ -1,4 +1,4 @@
-'use server';
+'use server'
 
 import { createClient } from "@supabase/supabase-js";
 import { User } from "@/app/lib/definitions";
@@ -6,7 +6,7 @@ import { User } from "@/app/lib/definitions";
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
 
 
-export async function getUsers() {
+export async function fetchUsers() {
 	const { data, error } = await supabase.from("users").select("*");
 
 	if (error != null) {
@@ -20,7 +20,7 @@ export async function getUsers() {
 	return { data: users, error: null };
 }
 
-export async function getFiles() {
+export async function fetchFiles() {
 	const { data, error } = await supabase.storage.from("files").list();
 
 	if (error != null) {
@@ -29,14 +29,3 @@ export async function getFiles() {
 
 	return { data: data, error: null };
 }
-
-export async function uploadFile(buffer: Buffer<ArrayBuffer>, fileName: string) {
-	const { data, error } = await supabase.storage.from('files').upload(fileName, buffer);
-
-	if (error != null) {
-		return { error: 'Database Error:' + error.message }
-	}
-
-	return { data: data, error: null };
-}
-

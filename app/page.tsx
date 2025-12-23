@@ -1,10 +1,12 @@
-import { getFiles, getUsers } from "@/app/lib/data"
-import UploadFile from "@/app/ui/uploadFile"
+import ButtonUploadFile from "@/app/ui/buttonUploadFile"
+import Table from "@/app/ui/table"
 
 export default async function Page() {
-	//const {data, error} = getFiles();
 
 	return (
-		<UploadFile />
+		<div>
+			<ButtonUploadFile />
+			<Table />
+		</div>
 	);
 }

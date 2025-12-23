@@ -1,11 +1,14 @@
 'use client';
 import { ChangeEvent, useState } from 'react';
 
-export default function UploadFile() {
+export default function ButtonUploadFile() {
 	const [file, setFile] = useState<File>();
 
 	const handleUpload = async () => {
-		if (!file) return;
+		if (!file) {
+			console.log("You haven't choosed any file");
+			return;
+		}
 
 		const formData = new FormData();
 		formData.append('file', file);
@@ -20,7 +23,10 @@ export default function UploadFile() {
 	};
 
 	const setFiles = (e: ChangeEvent<HTMLInputElement>) => {
-		if (!e.target.files) return;
+		if (!e.target.files) {
+			console.log("You haven't choosed any file");
+			return;
+		}
 		setFile(e.target.files[0]);
 	};
 

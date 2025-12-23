@@ -1,5 +1,5 @@
 "use server"
-import { uploadFile } from "@/app/lib/data";
+import { uploadFile } from "@/app/lib/actions";
 import { z } from "zod"
 
 const FormSchema = z.object({
@@ -17,11 +17,11 @@ export async function POST(req: Request) {
 	const arrayBuffer = await file.arrayBuffer();
 	const buffer = Buffer.from(arrayBuffer);
 
-	const { data, error } = await uploadFile(buffer, file.name);
-	if (error != null) {
-		console.log(error);
-		return Response.json({ error: error }, { status: 400 });
-	}
+	await uploadFile(buffer, file.name);
+	// if (error != null) {
+	// 	console.log(error);
+	// 	return Response.json({ error: error }, { status: 400 });
+	// }
 
-	return Response.json({ "message": data });
+	return Response.json({ "message": "HI" });
 }
