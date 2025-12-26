@@ -1,7 +1,6 @@
 'use client';
 
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { uploadFilesasdfsdfsdfsd, State, getSignedUploadUrl } from '@/app/lib/actions';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
@@ -21,37 +20,26 @@ export default function ButtonUploadFile() {
 		setStatus('Uploading...');
 		setProgress(0);
 
-		const { signedUrl, error } = await getSignedUploadUrl(file.name, file.type);
+		await axios.put("/api/upload", file, {
+			headers: {
+				'file-type': file.type,
+				'file-name': file.name,
+			},
+			onUploadProgress: (progressEvent) => {
+				const total = progressEvent.total || file.size;
+				const percentage = Math.round((progressEvent.loaded * 100) / total);
+				setProgress(percentage);
+			},
+		})
+			.then((res) => {
+				setStatus('Success!');
+				router.refresh();
+			})
+			.catch((err) => {
+				setStatus('Error');
+				console.log(err.response.data);
+			})
 
-		if (error || !signedUrl) {
-			setStatus('Error getting URL');
-			console.log(error);
-			return;
-		}
-		console.log(signedUrl)
-
-		try {
-			await axios.put(signedUrl, file, {
-				headers: {
-					'Content-Type': file.type,
-				},
-
-				onUploadProgress: (progressEvent) => {
-					const total = progressEvent.total || file.size;
-					const percentage = Math.round((progressEvent.loaded * 100) / total);
-					setProgress(percentage);
-				},
-			});
-
-
-			router.refresh();
-
-
-			setStatus('Success!');
-		} catch (error) {
-			console.error(error);
-			setStatus('Error');
-		}
 	};
 
 	return (

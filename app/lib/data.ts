@@ -10,7 +10,7 @@ export async function fetchUsers() {
 	const { data, error } = await supabase.from("users").select("*");
 
 	if (error != null) {
-		return { error: error.message };
+		return { data: null, error: error.message };
 	}
 
 	const users = data as User[];
@@ -24,8 +24,25 @@ export async function fetchFiles() {
 	const { data, error } = await supabase.storage.from("files").list();
 
 	if (error != null) {
-		return { error: error.message };
+		return { data: null, error: error.message };
 	}
 
 	return { data: data, error: null };
+}
+
+export async function getSignedUploadUrl(fileName: string, fileType: string) {
+	const filePath = `${fileName}`;
+
+	const { data, error } = await supabase.storage
+		.from('files')
+		.createSignedUploadUrl(filePath, {
+			upsert: false,
+		});
+
+	if (error) {
+		return { url: null, error: error.message };
+	}
+
+
+	return { url: data.signedUrl, error: null };
 }

@@ -7,7 +7,6 @@ export default async function Table() {
 		console.log(error);
 		throw new Error("Something went wrong");
 	}
-
 	return (
 		< div >
 			{data.map((invoice) =>
