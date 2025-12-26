@@ -41,3 +41,23 @@ export async function uploadFilesasdfsdfsdfsd(prevState: State, formData: FormDa
 	revalidatePath("/");
 	return {};
 }
+
+export async function getSignedUploadUrl(fileName: string, fileType: string) {
+	const filePath = `${fileName}`;
+
+	const { data, error } = await supabase.storage
+		.from('files')
+		.createSignedUploadUrl(filePath, {
+			upsert: false,
+		});
+
+	if (error) {
+		console.error('Error creating signed URL:', error);
+		return { error: error.message };
+	}
+
+	// 3. Return the token and path to the client
+	return {
+		signedUrl: data.signedUrl
+	};
+}
